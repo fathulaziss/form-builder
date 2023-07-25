@@ -22,10 +22,10 @@ class _MainViewState extends State<MainView> {
   Map validations = {};
 
   dynamic validationExample(field, value) {
-    if (value == null) {
+    if (value.isEmpty) {
       return 'Please enter some text';
     }
-    return '';
+    return null;
   }
 
   void onChanged(dynamic value) {
@@ -38,7 +38,7 @@ class _MainViewState extends State<MainView> {
   void initForm() {
     final List fields = sampleFormData['fields'];
     for (final data in fields) {
-      if (data['key'] == 'inputKey1') {
+      if (data['key'] == 'formKey1') {
         decorations.addAll({
           data['key']: const InputDecoration(
             labelText: 'Enter Your Name',
@@ -49,10 +49,17 @@ class _MainViewState extends State<MainView> {
 
         keyboardTypes.addAll({data['key']: TextInputType.text});
 
-        validations.addAll({data['key']: validationExample});
+        validations.addAll({
+          data['key']: (field, value) {
+            if (value.isEmpty) {
+              return "name don't be empty";
+            }
+            return null;
+          }
+        });
       }
 
-      if (data['key'] == 'inputKey2') {
+      if (data['key'] == 'formKey2') {
         decorations.addAll({
           data['key']: const InputDecoration(
             labelText: 'Enter Your Phone Number',
@@ -63,7 +70,14 @@ class _MainViewState extends State<MainView> {
 
         keyboardTypes.addAll({data['key']: TextInputType.number});
 
-        validations.addAll({data['key']: validationExample});
+        validations.addAll({
+          data['key']: (field, value) {
+            if (value.isEmpty) {
+              return "phone number don't be empty";
+            }
+            return null;
+          }
+        });
       }
     }
   }
@@ -89,8 +103,8 @@ class _MainViewState extends State<MainView> {
                 form: formString,
                 onChanged: onChanged,
                 keyboardTypes: keyboardTypes,
-                actionSave: () {
-                  log('do this');
+                actionSave: (data) {
+                  log('$data');
                 },
                 buttonSave: Container(
                   width: double.infinity,
